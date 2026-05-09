@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study Hub — IGCSE Past Papers</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
+  :root{--green:#166534;--green-mid:#16a34a;--green-light:#dcfce7;--blue:#1e3a5f;--blue-light:#eff6ff;--amber:#92400e;--amber-light:#fef3c7;--border:#e5e7eb;--text:#111827;--muted:#6b7280;--bg:#f9fafb;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+  .header{background:var(--green);color:white;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.2);}
+  .header h1{font-size:1.1rem;font-weight:700;}
+  .header p{font-size:0.75rem;opacity:0.8;margin-top:2px;}
+  .badge{background:white;color:var(--green);font-size:0.72rem;font-weight:700;padding:4px 12px;border-radius:20px;}
+  .status{font-size:0.72rem;opacity:0.85;}
+  .container{display:flex;height:calc(100vh - 58px);}
+  .sidebar{width:210px;background:white;border-right:1px solid var(--border);overflow-y:auto;flex-shrink:0;}
+  .sidebar-title{font-size:0.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;padding:14px 14px 6px;}
+  .subject-btn{display:flex;align-items:center;gap:8px;width:100%;padding:9px 14px;border:none;background:none;cursor:pointer;text-align:left;font-family:inherit;font-size:0.83rem;color:var(--text);transition:background 0.12s;border-left:3px solid transparent;position:relative;}
+  .subject-btn:hover{background:var(--green-light);}
+  .subject-btn.active{background:var(--green-light);color:var(--green);font-weight:600;border-left-color:var(--green);}
+  .s-code{font-size:0.65rem;color:var(--muted);background:var(--bg);padding:1px 5px;border-radius:8px;margin-left:auto;flex-shrink:0;}
+  .s-count{font-size:0.62rem;color:white;background:var(--green-mid);padding:1px 6px;border-radius:8px;margin-left:4px;}
+  .main{flex:1;overflow-y:auto;padding:16px 20px;}
+  .howto{background:var(--amber-light);border:1px solid #fcd34d;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:0.8rem;line-height:1.6;color:var(--amber);}
+  .stats-bar{background:white;border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin-bottom:12px;display:flex;gap:14px;font-size:0.78rem;color:var(--muted);flex-wrap:wrap;}
+  .stats-bar strong{color:var(--green);}
+  .filters{display:flex;gap:7px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
+  .fl{font-size:0.76rem;font-weight:600;color:var(--muted);}
+  .fb{padding:4px 11px;border:1.5px solid var(--border);border-radius:20px;background:white;font-size:0.74rem;cursor:pointer;font-family:inherit;transition:all 0.12s;color:var(--text);}
+  .fb:hover{border-color:var(--green-mid);color:var(--green);}
+  .fb.active{background:var(--green);color:white;border-color:var(--green);}
+  .year-section{margin-bottom:16px;}
+  .year-header{font-size:0.76rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;padding:4px 0;border-bottom:1px solid var(--border);margin-bottom:8px;}
+  .papers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:7px;}
+  .paper-card{background:white;border:1.5px solid var(--border);border-radius:8px;padding:9px 11px;display:flex;align-items:center;gap:9px;transition:all 0.12s;}
+  .paper-card:hover{border-color:var(--green-mid);box-shadow:0 2px 6px rgba(22,163,74,0.1);}
+  .pi{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0;}
+  .pi-qp{background:var(--blue-light);}.pi-ms{background:var(--green-light);}
+  .paper-info{flex:1;min-width:0;}
+  .pname{font-size:0.76rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .pmeta{font-size:0.66rem;color:var(--muted);margin-top:1px;}
+  .ptags{display:flex;gap:3px;margin-top:3px;}
+  .tag{font-size:0.6rem;font-weight:600;padding:1px 5px;border-radius:7px;}
+  .tqp{background:var(--blue-light);color:var(--blue);}.tms{background:var(--green-light);color:var(--green);}
+  .ts{background:var(--amber-light);color:var(--amber);}.tw{background:var(--blue-light);color:var(--blue);}
+  .tm{background:#f3e8ff;color:#6b21a8;}
+  .copy-btn{background:var(--green);border:none;border-radius:5px;padding:4px 10px;font-size:0.66rem;cursor:pointer;font-family:inherit;color:white;transition:all 0.12s;white-space:nowrap;flex-shrink:0;font-weight:600;}
+  .copy-btn:hover{background:var(--green-mid);}
+  .copy-btn.copied{background:#059669;}
+  .loading-main{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;gap:12px;color:var(--muted);font-size:0.88rem;}
+  .spinner{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin 0.8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .empty{text-align:center;padding:40px;color:var(--muted);}
+  .err{padding:16px;color:#991b1b;font-size:0.82rem;background:#fee2e2;border-radius:8px;line-height:1.8;}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1>📚 Study Hub — IGCSE Past Papers</h1>
+    <p>NPS International School · Grade 9 · Board Exams May/June 2028</p>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <span class="status" id="status">⏳ Loading...</span>
+    <div class="badge">Cambridge CAIE</div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="sidebar">
+    <div class="sidebar-title">Subjects</div>
+    <button class="subject-btn active" data-subject="Chemistry" onclick="selectSubject(this)">⚗️ Chemistry <span class="s-code">0620</span></button>
+    <button class="subject-btn" data-subject="Physics" onclick="selectSubject(this)">⚡ Physics <span class="s-code">0625</span></button>
+    <button class="subject-btn" data-subject="Additional_Mathematics" onclick="selectSubject(this)">📐 Add. Maths <span class="s-code">0606</span></button>
+    <button class="subject-btn" data-subject="Economics" onclick="selectSubject(this)">📈 Economics <span class="s-code">0455</span></button>
+    <button class="subject-btn" data-subject="Business" onclick="selectSubject(this)">💼 Business <span class="s-code">0450</span></button>
+    <button class="subject-btn" data-subject="Computer_Science" onclick="selectSubject(this)">💻 Comp. Science <span class="s-code">0478</span></button>
+    <button class="subject-btn" data-subject="English_Language" onclick="selectSubject(this)">📝 Eng. Language <span class="s-code">0500</span></button>
+    <button class="subject-btn" data-subject="English_Literature" onclick="selectSubject(this)">📖 Eng. Literature <span class="s-code">0475</span></button>
+    <button class="subject-btn" data-subject="French" onclick="selectSubject(this)">🇫🇷 French <span class="s-code">0520</span></button>
+  </div>
+  <div class="main" id="main">
+    <div class="loading-main"><div class="spinner"></div>Loading papers...</div>
+  </div>
+</div>
+
+<script>
+let allPapers = [];
+let currentSubject = 'Chemistry';
+let filterType = 'all';
+let filterSession = 'all';
+
+// Load papers.json — the real file list generated from your actual repo
+async function init() {
+  try {
+    const res = await fetch('papers.json');
+    if (!res.ok) throw new Error('papers.json not found');
+    allPapers = await res.json();
+
+    document.getElementById('status').textContent = '✅ ' + allPapers.length + ' papers';
+    setTimeout(() => { document.getElementById('status').style.opacity = '0'; }, 3000);
+
+    // Update sidebar counts
+    const subjects = ['Chemistry','Physics','Additional_Mathematics','Economics','Business','Computer_Science','English_Language','English_Literature','French'];
+    subjects.forEach(s => {
+      const count = allPapers.filter(p => p.s === s).length;
+      const btn = document.querySelector('[data-subject="' + s + '"]');
+      if (btn && count > 0) {
+        const span = document.createElement('span');
+        span.className = 's-count';
+        span.textContent = count;
+        btn.appendChild(span);
+      }
+    });
+
+    render();
+  } catch(e) {
+    document.getElementById('status').textContent = '❌ Error';
+    document.getElementById('main').innerHTML = `
+      <div class="err">
+        ❌ Could not load <strong>papers.json</strong>.<br><br>
+        Make sure <code>papers.json</code> is in the same folder as this <code>index.html</code> file and both are committed to GitHub.<br><br>
+        <strong>Error:</strong> ${e.message}
+      </div>`;
+  }
+}
+
+function parsePaper(name) {
+  const isQP = name.includes('_qp_');
+  const isMS = name.includes('_ms_');
+  const isSummer = /_s\d{2}_/.test(name);
+  const isWinter = /_w\d{2}_/.test(name);
+  const isMarch = /_m\d{2}_/.test(name);
+  const m = name.match(/_(?:qp|ms)_(\w+)\.pdf/);
+  const paperNum = m ? m[1] : '?';
+  const session = isSummer ? 'May/Jun' : isWinter ? 'Oct/Nov' : isMarch ? 'March' : '';
+  return {isQP, isMS, isSummer, isWinter, isMarch, paperNum, session};
+}
+
+function selectSubject(btn) {
+  document.querySelectorAll('.subject-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentSubject = btn.dataset.subject;
+  filterType = 'all';
+  filterSession = 'all';
+  render();
+}
+
+function render() {
+  const main = document.getElementById('main');
+  const subjectPapers = allPapers.filter(p => p.s === currentSubject);
+  let filtered = [...subjectPapers];
+
+  if (filterType === 'qp') filtered = filtered.filter(p => parsePaper(p.n).isQP);
+  if (filterType === 'ms') filtered = filtered.filter(p => parsePaper(p.n).isMS);
+  if (filterSession === 's') filtered = filtered.filter(p => parsePaper(p.n).isSummer);
+  if (filterSession === 'w') filtered = filtered.filter(p => parsePaper(p.n).isWinter);
+  if (filterSession === 'm') filtered = filtered.filter(p => parsePaper(p.n).isMarch);
+
+  const qpCount = subjectPapers.filter(p => parsePaper(p.n).isQP).length;
+  const msCount = subjectPapers.filter(p => parsePaper(p.n).isMS).length;
+  const years = [...new Set(subjectPapers.map(p => p.y))].sort();
+  const subjectDisplay = currentSubject.replace(/_/g,' ');
+
+  const byYear = {};
+  filtered.forEach(p => { if(!byYear[p.y]) byYear[p.y]=[]; byYear[p.y].push(p); });
+  const sortedYears = Object.keys(byYear).sort((a,b) => b-a);
+
+  let html = `
+    <div class="howto">
+      💡 <strong>How to use with Claude:</strong>
+      Click <strong>Copy Link</strong> on any paper → paste into your Claude <strong>${subjectDisplay} Project</strong> → say <em>"Give me UT1 questions from this paper"</em> or <em>"Generate a revision sheet"</em>
+    </div>
+    <div class="stats-bar">
+      <span><strong>${subjectDisplay}</strong></span>
+      <span>Total: <strong>${subjectPapers.length}</strong></span>
+      <span>QP: <strong>${qpCount}</strong></span>
+      <span>MS: <strong>${msCount}</strong></span>
+      <span>Years: <strong>${years[0]}–${years[years.length-1]}</strong></span>
+      <span>Showing: <strong>${filtered.length}</strong></span>
+    </div>
+    <div class="filters">
+      <span class="fl">Type:</span>
+      <button class="fb ${filterType==='all'?'active':''}" onclick="setFilter('type','all')">All</button>
+      <button class="fb ${filterType==='qp'?'active':''}" onclick="setFilter('type','qp')">📄 Question Papers</button>
+      <button class="fb ${filterType==='ms'?'active':''}" onclick="setFilter('type','ms')">✅ Mark Schemes</button>
+      <span class="fl" style="margin-left:6px">Session:</span>
+      <button class="fb ${filterSession==='all'?'active':''}" onclick="setFilter('session','all')">All</button>
+      <button class="fb ${filterSession==='s'?'active':''}" onclick="setFilter('session','s')">☀️ May/Jun</button>
+      <button class="fb ${filterSession==='w'?'active':''}" onclick="setFilter('session','w')">❄️ Oct/Nov</button>
+      <button class="fb ${filterSession==='m'?'active':''}" onclick="setFilter('session','m')">🌸 March</button>
+    </div>`;
+
+  if (!filtered.length) {
+    html += '<div class="empty">No papers match your filters.</div>';
+  } else {
+    sortedYears.forEach(year => {
+      const yp = byYear[year].sort((a,b) => a.n.localeCompare(b.n));
+      html += `<div class="year-section">
+        <div class="year-header">📅 ${year} · ${yp.length} files</div>
+        <div class="papers-grid">`;
+      yp.forEach(paper => {
+        const info = parsePaper(paper.n);
+        const icon = info.isQP ? '📄' : '✅';
+        const iconClass = info.isQP ? 'pi-qp' : 'pi-ms';
+        const typeTag = info.isQP ? '<span class="tag tqp">QP</span>' : '<span class="tag tms">MS</span>';
+        const sessTag = info.isSummer ? '<span class="tag ts">May/Jun</span>' :
+                        info.isWinter ? '<span class="tag tw">Oct/Nov</span>' :
+                        info.isMarch  ? '<span class="tag tm">March</span>' : '';
+        const safeUrl = paper.u.replace(/'/g,"\\'");
+        html += `<div class="paper-card">
+          <div class="pi ${iconClass}">${icon}</div>
+          <div class="paper-info">
+            <div class="pname" title="${paper.n}">${paper.n}</div>
+            <div class="pmeta">Paper ${info.paperNum} · ${info.session} ${year}</div>
+            <div class="ptags">${typeTag}${sessTag}</div>
+          </div>
+          <button class="copy-btn" onclick="copyLink('${safeUrl}',this)">Copy Link</button>
+        </div>`;
+      });
+      html += '</div></div>';
+    });
+  }
+  main.innerHTML = html;
+}
+
+function setFilter(type, value) {
+  if (type==='type') filterType=value;
+  if (type==='session') filterSession=value;
+  render();
+}
+
+function copyLink(url, btn) {
+  const done = () => {
+    const orig = btn.textContent;
+    btn.textContent = '✅ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy Link'; btn.classList.remove('copied'); }, 2000);
+  };
+  if (navigator.clipboard) navigator.clipboard.writeText(url).then(done).catch(() => fallback(url, done));
+  else fallback(url, done);
+}
+
+function fallback(url, cb) {
+  const ta = document.createElement('textarea');
+  ta.value = url; ta.style.cssText = 'position:fixed;opacity:0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); cb(); } catch(e) { alert('Copy this link:\n' + url); }
+  document.body.removeChild(ta);
+}
+
+init();
+</script>
+</body>
+</html>
